@@ -6,12 +6,19 @@ pico_stdio, pico_standart_link, pico_util*/
 #include "hardware/spi.h"
 
 
-/* Назначение портов */
+/* Назначение портов SPI*/
 #define SPI_PORT spi0
 #define PIN_MISO_1 1
 #define PIN_MISO_2 6
 #define PIN_MISO_3 21
 #define PIN_SCK  4
+
+
+/* Назначение портов UART (для USB)*/
+/*
+#define PIN_RX 22
+#define PIN_TX 21
+*/
 
 
 /* Скорость передачи данных */
@@ -29,20 +36,42 @@ float pga_divider = 1,0; /* Значение коэффициента усиле
 
 
 /* Одиночный испульс синхронизации*/
-void PinUpDown(){}
+void PinUpDown(){
+    gpio_put(PIN_SCK, HIGH);
+    DELAY_410NS;
+    gpio_put(PIN_SCK, LOW);
+    DELAY_410NS;
+}
+
+
+/* Плдключение платы */
+void setup(){
+
+}
 
 
 int main()
 {
     stdio_init_all();
 
+    sleep_ms(2*1000);
+    printf("Institute of Metal Physics. Magnetic control device\n");
 
+    /* Запуск последовательной связи */
+    spi_init(SPI_PORT, FREQUENCY); /* Инициализирует экземпляры SPI. Переводит SPI в известное состояние и включает его. Необходимо вызывать перед другими функциями */
+    /* ожидание появления последовательной свяи */
+    
     /* Инициализирует экземпляры SPI */
     gpio_set_function(PIN_MISO_1, GPIO_FUNC_SPI);
     gpio_set_function(PIN_MISO_2, GPIO_FUNC_SIO);
     gpio_set_function(PIN_MISO_3, GPIO_FUNC_SPI);
     gpio_set_function(PIN_SCK,    GPIO_FUNC_SPI);
-    
+
+    /* Инициализирует экземпляры UART */
+    /*
+    gpio_set_function(PIN_RX, GPIO_FUNC_UART);
+    gpio_set_function(PIN_TX, GPIO_FUNC_UART);
+    */    
 
     /* Выбор микросхемы активен при низком напряжении, поэтому мы инициализируем его в состоянии высокого напряжения */
     gpio_set_dir(PIN_CS, GPIO_OUT);
@@ -52,4 +81,5 @@ int main()
         printf("Hello, world!\n");
         sleep_ms(1000);
     }
+    return 0;
 }
