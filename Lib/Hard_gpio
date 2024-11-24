@@ -1,0 +1,158 @@
+Интерфейс ввода-вывода общего назначения (GPIO).
+RP2040 имеет 36 многофункциональных контактов ввода-вывода общего назначения (GPIO), разделенных на два блока. В типичном случае использования pin-коды в банке 
+    QSPI (QSPI_SS, QSPI_SCLK и QSPI_SD0-QSPI_SD3) используются для выполнения кода с внешнего флэш-устройства, оставляя пользовательский банк (от GPIO0 до GPIO29)
+    для использования программистом.
+Все GPIO поддерживают цифровые входы и выходы, но GPIO26-GPIO29 также могут использоваться в качестве входных сигналов для аналого-цифрового преобразователя (АЦП) микросхемы.
+Каждый GPIO может управляться непосредственно программным обеспечением, запущенным на процессорах, или рядом других функциональных блоков.
+Функция, назначенная каждому GPIO, выбирается путем вызова функции gpio_set_function. Не все функции доступны на всех выводах.
+Для каждого GPIO может быть выбрана только одна функция за раз. Аналогично, каждый периферийный вход (например, UART0 RX) должен быть выбран только для одного GPIO за раз.
+Если один и тот же периферийный вход подключен к нескольким GPIO, периферийное устройство видит логический ИЛИ один из этих входов GPIO.
+Пожалуйста, обратитесь к техническому описанию для получения дополнительной информации о выборе функции GPIO.
+
+
+Enumerations
+enum gpio_function { GPIO_FUNC_XIP = 0, GPIO_FUNC_SPI = 1, GPIO_FUNC_UART = 2, GPIO_FUNC_I2C = 3, GPIO_FUNC_PWM = 4, GPIO_FUNC_SIO = 5, GPIO_FUNC_PIO0 = 6, GPIO_FUNC_PIO1 = 7, GPIO_FUNC_GPCK = 8, GPIO_FUNC_USB = 9, GPIO_FUNC_NULL = 0xf }
+    Определения функций GPIO для использования с function select
+enum gpio_irq_level { GPIO_IRQ_LEVEL_LOW = 0x1u, GPIO_IRQ_LEVEL_HIGH = 0x2u, GPIO_IRQ_EDGE_FALL = 0x4u, GPIO_IRQ_EDGE_RISE = 0x8u }
+    Определения уровня прерывания GPIO.
+
+
+void gpio_acknowledge_irq (uint gpio, uint32_t events)
+    Подтвердите прерывание GPIO.
+Parameters
+    номер gpio в GPIO
+    необходимо очистить битовую маску событий. Подробности смотрите в разделе gpio_set_irq_enabled.
+
+
+static void gpio_clr_mask (uint32_t mask)
+    Снижайте скорость при каждом появлении GPIO в маске.
+
+
+static void gpio_disable_pulls (uint gpio)
+    Отключите вытягивание для указанного GPIO.
+
+
+static bool gpio_get (uint gpio)
+    Получить состояние одного указанного GPIO.
+
+
+static uint32_t gpio_get_all ()
+    Получите исходное значение всех GPIO.
+
+
+static uint gpio_get_dir (uint gpio)
+    Получите конкретное направление GPIO.
+
+
+void gpio_init (uint gpio)
+    Инициализируйте GPIO для (enabled I/O и установите для функции func значение GPIO_FUNC_SIO) Снимите флажок output enable (т.е. установите значение input), чтобы
+        очистить любое выходное значение.
+
+
+void gpio_init_mask (uint gpio_mask)
+    Инициализируйте несколько GPIO (включите ввод-вывод и установите для функции func значение GPIO_FUNC_SIO) Снимите флажок output enable (т.е. установите значение input),
+        очистите любое выходное значение
+
+
+static bool gpio_is_dir_out (uint gpio)
+    Проверьте, не задано ли конкретное направление GPIO.
+
+
+static bool gpio_is_pulled_down (uint gpio)
+    Определите, удален ли указанный GPIO.
+
+
+static bool gpio_is_pulled_up (uint gpio)
+    Определите, запущен ли указанный GPIO
+
+
+static void gpio_pull_down (uint gpio)
+    Установите указанный GPIO для удаления.
+
+
+static void gpio_pull_up (uint gpio)
+    Установите указанный GPIO для вывода на экран
+
+
+static void gpio_put (uint gpio, bool value)
+    Переключите один режим GPIO на высокий / низкий уровень. 
+Parameters
+    gpio Номер GPIO
+    значение, если значение равно false, очистите GPIO, в противном случае установите его.
+
+
+static void gpio_put_all (uint32_t value)
+    Вбейте все штифты одновременно.
+
+
+static void gpio_put_masked (uint32_t mask, uint32_t value)
+    Увеличьте или уменьшите значение GPIO в зависимости от параметров. Для каждого 1 бита в маске установите этот вывод на значение, заданное соответствующим битом в value, оставив остальные выводы без 
+        изменений. Поскольку при этом используется псевдоним TOGGLE, он безопасен для параллелизма, например, когда IRQ использует разные контакты одного и того же ядра.
+
+
+static void gpio_set_dir (uint gpio, bool out)
+    Установите одно направление GPIO.
+
+
+static void gpio_set_dir_all_bits (uint32_t values)
+    Установите направление всех штифтов одновременно.
+
+
+static void gpio_set_dir_in_masked (uint32_t mask)
+    Установите количество вводимых значений GPIO.
+
+
+static void gpio_set_dir_masked (uint32_t mask, uint32_t value)
+    Установите несколько направлений GPIO. Для каждого 1 бита в "маске" переключите этот вывод в направлении, указанном соответствующим битом в "значении", оставив остальные выводы без изменений. Например, 
+        gpio_set_dir_masked(0x3, 0x2); → установите вывод 0 на вход, вывод 1 на выход одновременно.
+
+
+static void gpio_set_dir_out_masked (uint32_t mask)
+    Установите количество GPIO для вывода. Переключите все GPIO в "маске" на вывод
+
+
+void gpio_set_dormant_irq_enabled (uint gpio, uint32_t events, bool enabled)
+    Включите прерывание пробуждения в режиме ожидания для указанного GPIO. Это настраивает IRQ для перезапуска XOSC или ROSC, когда они отключены в режиме ожидания.
+
+
+void gpio_set_function (uint gpio, enum gpio_function fn)
+    Выберите функцию GPIO.
+Parameters
+    gpio Номер GPIO
+    указывает, какую функцию GPIO выбрать для использования из списка gpio_function
+
+
+void gpio_set_inover (uint gpio, uint value)
+    Выберите переопределение ввода GPIO.
+
+
+void gpio_set_input_enabled (uint gpio, bool enabled)
+    Включите ввод GPIO.
+
+
+void gpio_set_irq_enabled (uint gpio, uint32_t events, bool enabled)
+    Включать или отключать прерывания для указанного GPIO. События - это битовая маска из следующих: 0 - Low level, 1 - High level, 2 - Edge low, 3 - Edge high
+
+
+void gpio_set_irq_enabled_with_callback (uint gpio, uint32_t events, bool enabled, gpio_irq_callback_t callback)
+    Включите прерывания для указанного GPIO.
+
+
+static void gpio_set_mask (uint32_t mask)
+    Увеличивайте скорость каждого GPIO, появляющегося в маске.
+
+
+void gpio_set_oeover (uint gpio, uint value)
+    Выберите "Включить переопределение вывода GPIO".
+
+
+void gpio_set_outover (uint gpio, uint value)
+    Установите переопределение вывода GPIO
+
+
+void gpio_set_pulls (uint gpio, bool up, bool down)
+    Выберите перемещения вверх и вниз для конкретного GPIO.
+
+
+static void gpio_xor_mask (uint32_t mask)
+    Переключайте каждый GPIO, отображаемый в маске.
