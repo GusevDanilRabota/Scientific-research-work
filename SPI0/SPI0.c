@@ -1,6 +1,8 @@
 /* Подключение требуемых директорий */
 #include <stdio.h>
 #include "pico/stdlib.h"
+/* pico/stdlib.h включает в себя  hardware_uart, hardware_gpio, pico_binary_info, pico_runtime, pico_ platform, pico_printf, 
+pico_stdio, pico_standart_link, pico_util*/
 #include "hardware/spi.h"
 
 
@@ -36,7 +38,7 @@ int main()
 
 
     /* Инициализирует экземпляры SPI */
-    spi_init(SPI_PORT, FREQUENCY);
+    spi_init(SPI_PORT, FREQUENCY); /* Инициализирует экземпляры SPI. Переводит SPI в известное состояние и включает его. Необходимо вызывать перед другими функциями */
     gpio_set_function(PIN_MISO_1, GPIO_FUNC_SPI);
     gpio_set_function(PIN_MISO_2, GPIO_FUNC_SIO);
     gpio_set_function(PIN_MISO_3, GPIO_FUNC_SPI);
