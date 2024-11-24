@@ -22,11 +22,11 @@
 
 
 /* Переменные для хранения данных с датчиков (АЦП) */
-long ADCread1, ADCread2, ADCread3
-float pga_divider = 1,0 /* Значение коэффициента усиления */
+long ADCread1, ADCread2, ADCread3;
+float pga_divider = 1,0; /* Значение коэффициента усиления */
 
 
-/* Одиночный испульс */
+/* Одиночный испульс синхронизации*/
 void PinUpDown(){}
 
 
@@ -34,17 +34,19 @@ int main()
 {
     stdio_init_all();
 
+
     /* Инициализирует экземпляры SPI */
     spi_init(SPI_PORT, FREQUENCY);
-    gpio_set_function(PIN_MISO, GPIO_FUNC_SPI);
-    gpio_set_function(PIN_CS,   GPIO_FUNC_SIO);
-    gpio_set_function(PIN_SCK,  GPIO_FUNC_SPI);
-    gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
+    gpio_set_function(PIN_MISO_1, GPIO_FUNC_SPI);
+    gpio_set_function(PIN_MISO_2, GPIO_FUNC_SIO);
+    gpio_set_function(PIN_MISO_3, GPIO_FUNC_SPI);
+    gpio_set_function(PIN_SCK,    GPIO_FUNC_SPI);
     
-    // Chip select is active-low, so we'll initialise it to a driven-high state
+
+    /* Выбор микросхемы активен при низком напряжении, поэтому мы инициализируем его в состоянии высокого напряжения */
     gpio_set_dir(PIN_CS, GPIO_OUT);
     gpio_put(PIN_CS, 1);
-    // For more examples of SPI use see https://github.com/raspberrypi/pico-examples/tree/master/spi
+
 
     while (true) {
         printf("Hello, world!\n");
