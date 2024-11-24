@@ -38,7 +38,6 @@ int main()
 
 
     /* Инициализирует экземпляры SPI */
-    spi_init(SPI_PORT, FREQUENCY); /* Инициализирует экземпляры SPI. Переводит SPI в известное состояние и включает его. Необходимо вызывать перед другими функциями */
     gpio_set_function(PIN_MISO_1, GPIO_FUNC_SPI);
     gpio_set_function(PIN_MISO_2, GPIO_FUNC_SIO);
     gpio_set_function(PIN_MISO_3, GPIO_FUNC_SPI);
@@ -48,7 +47,6 @@ int main()
     /* Выбор микросхемы активен при низком напряжении, поэтому мы инициализируем его в состоянии высокого напряжения */
     gpio_set_dir(PIN_CS, GPIO_OUT);
     gpio_put(PIN_CS, 1);
-
 
     while (true) {
         printf("Hello, world!\n");
