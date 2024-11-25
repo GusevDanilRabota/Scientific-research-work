@@ -34,8 +34,12 @@
 
 
 /* Временые константы для задания длительности импульса */
-#define DELAY_82NS asm volatile ("nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t")
-#define DELAY_410NS 5*DELAY_82NS
+#define DELAY_410NS asm volatile ("nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t 
+                                    nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t 
+                                    nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t 
+                                    nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t 
+                                    nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t nop\n\t")
+/* Может отличаться от расчитанного, но подругому задержки в 0.5 мс не достичь */
 
 
 
@@ -55,15 +59,19 @@ void SETTING_PIN_SPI(){
 
     /* Инициализирует экземпляры SPI */
     gpio_set_function(MISO, GPIO_FUNC_SPI);
-    /* Пин MISO должен работать на вход (принимать сигнал) */
+        gpio_set_dir(MISO, GPIO_IN) /* Пин MISO должен работать на вход (принимать сигнал) */
     gpio_set_function(SCn1, GPIO_FUNC_SIO);
-    /* Задать начальный уровень HIGH */
+        gpio_set_dir(SCn1, GPIO_OUT);
+        gpio_put(SCn1, HIGH); /* Задать начальный уровень HIGH */
     gpio_set_function(SCn2, GPIO_FUNC_SIO);
-    /* Задать начальный уровень HIGH */
+        gpio_set_dir(SCn1, GPIO_OUT);
+        gpio_put(SCn1, HIGH); /* Задать начальный уровень HIGH */
     gpio_set_function(SCn3, GPIO_FUNC_SIO);
-    /* Задать начальный уровень HIGH */
+        gpio_set_dir(SCn1, GPIO_OUT);
+        gpio_put(SCn1, HIGH); /* Задать начальный уровень HIGH */
     gpio_set_function(SCK, GPIO_FUNC_SPI);
-    /* Задать начальный уровень LOW. Пин SCK должен работать на выход */
+        gpio_set_dir(SCK, GPIO_OUT);
+        gpio_put(SCK, LOW); /* Задать начальный уровень LOW. Пин SCK должен работать на выход */
 }
 
 
@@ -84,10 +92,10 @@ void SETTING_PIN_UART(){
 
 /* Одиночный испульс синхронизации*/
 void SCK_PULSE(){
-    /* Задать высокий уровень. Пин SCK должен работать на выход */
-    /* Удержать импульс на заданную длительность */
-    /* Задать низкий уровень */
-    /* Удержать импульс на заданную длительность */
+    gpio_put(SCK, HIGH); /* Задать высокий уровень. Пин SCK должен работать на выход */
+    DELAY_410NS; /* Удержать импульс на заданную длительность */
+    gpio_put(SCK, LOW); /* Задать низкий уровень */
+    DELAY_410NS; /* Удержать импульс на заданную длительность */
 }
 
 
@@ -129,17 +137,23 @@ int main()
     SETTING_PIN_SPI();
     SETTING_PIN_UART();
     
-    /* Для уверенности задаём пинам уровни: SCK - LOW, SC - HIGH */  
+    /* Для уверенности задаём пинам уровни: SCK - LOW, SC - HIGH */ 
+    gpio_put(SCK, LOW);
+    gpio_put(SCn1, HIGH);
+    gpio_put(SCn2, HIGH); 
+    gpio_put(SCn3, HIGH); 
 
     /* Главный цикл */
-    for(pass; pass; pass){
-        for(для каждого SCn){
+    while(TRUE){ /* Надо потом переделать на цикл for - мы подаём синусоидальный сигнал конечной длительности и когда он закончится 
+                нет смысла продолжать выполнение программы */
+        for(int SC: {2, 7, 24}){
+            printf("Work with SCn", SC);
             /*  */
-            /* Задаём SCn уровень - LOW */
+            gpio_put(SC, LOW);
             Z_POLSE();
             /* Считывание данных с датчика */
             /* Передача данных по USB */
-            /* Задаём SCn уровень - HIGH */
+            gpio_put(SC, HIGH);
         }
     }
 
