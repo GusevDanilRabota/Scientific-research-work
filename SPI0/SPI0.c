@@ -114,11 +114,15 @@ void Z_POLSE(){
 /* Чтение данных с АЦП */
 SPI_READ_DATA(SCn){
     gpio_put(SCn, LOW);
+
+    long result = 0;
+
     for(){ /* В регистре не хватит места, поэтому используем 32 разрядную переменную */
         gpio_put(SCK, HIGH);
         DELAY_410NS;
 
         result |= digitalRead(DOUT_DRDY) << (23 - i);
+        /* spi_write_blocking (spi0, result, 2) */
 
         gpio_put(SCK, LOW);
         DELAY_410NS;
