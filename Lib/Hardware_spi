@@ -4,10 +4,14 @@
     spi_set_slave. Каждый контроллер можно подключить к нескольким выводам GPIO. Дополнительную информацию см. в таблице выбора функций GPIO в 
     техническом описании.
 
+
+
 void spi_deinit (spi_inst_t *spi)
     Инициализация экземпляров SPI. Переводит SPI в отключённое состояние. Для повторного включения функций устройства необходимо вызвать функцию Init
 Parameters
     spi Спецификатор экземпляра SPI, либо spi0, либо spi1
+
+
 
 
 static uint spi_get_index (spi_inst_t *spi)
@@ -18,10 +22,14 @@ Returns
     Номер SPI, 0 или 1
 
 
+
+
 void spi_init (spi_inst_t *spi, uint baudrate)
     Инициализирует экземпляры SPI. Переводит SPI в известное состояние и включает его. Необходимо вызывать перед другими функциями
 Parameters
     spi Спецификатор экземпляра SPI, либо spi0, либо spi1. baudrate Требуемая скорость передачи данных в Гц
+
+
 
 
 static size_t spi_is_readable (spi_inst_t *spi)
@@ -32,12 +40,16 @@ Returns
     Ненулевое значение, если возможно считывание, т.е. данные присутствуют
 
 
+
+
 static size_t spi_is_writable (spi_inst_t *spi)
     Проверьте, можно ли выполнить запись на устройстве SPI
 Parameters
     spi Спецификатор экземпляра SPI, либо spi0, либо spi1
 Returns
     0, если для записи нет свободного места. Не равно 0, если запись возможна
+
+
 
 
 int spi_read16_blocking (spi_inst_t *spi, uint16_t repeated_tx_data, uint16_t *dst, size_t len)
@@ -54,6 +66,8 @@ Returns
     Количество записанных/считанных байт
 
 
+
+
 int spi_read_blocking (spi_inst_t *spi, uint8_t repeated_tx_data, uint8_t *dst, size_t len)
     Считывание с устройства SPI. Считывание len байт из SPI в dst. Блокировка до передачи всех данных.
         Тайм-аут отсутствует, так как аппаратное обеспечение SPI всегда передает данные с известной скоростью.
@@ -68,6 +82,8 @@ Returns
     Количество записанных/считанных байт
 
 
+
+
 uint spi_set_baudrate (spi_inst_t *spi, uint baudrate)
     Установите скорость передачи данных SPI. Установите частоту SPI как можно ближе к скорости передачи данных и верните фактическую достигнутую скорость
 Parameters
@@ -76,6 +92,8 @@ Parameters
         в зависимости от настроек системных часов.
 Returns
     Фактическая установленная скорость передачи данных в бодах
+
+
 
 
 static void spi_set_format (spi_inst_t *spi, uint data_bits, spi_cpol_t cpol, spi_cpha_t cpha, spi_order_t order)
@@ -89,11 +107,15 @@ Parameters
 Returns
 
 
+
+
 static void spi_set_slave (spi_inst_t *spi, bool slave)
     Установите режим SPI «ведущий/ведомый». Настройте SPI для работы в режиме «ведущий» или «ведомый». По умолчанию spi_init() устанавливает режим «ведущий»
 Parameters
     spi Спецификатор экземпляра SPI, либо spi0, либо spi1
     slave - значение true для установки устройства SPI в качестве подчиненного устройства, false - в качестве ведущего
+
+
 
 
 int spi_write16_blocking (spi_inst_t *spi, const uint16_t *src, size_t len)
@@ -105,6 +127,8 @@ Parameters
     максимальная длина буферов
 Returns
     Количество записанных/считанных байт
+
+
 
 
 int spi_write16_read16_blocking (spi_inst_t *spi, const uint16_t *src, uint16_t *dst, size_t len)
@@ -120,6 +144,8 @@ Returns
     Количество записанных/считанных байт
 
 
+
+
 int spi_write_blocking (spi_inst_t *spi, const uint8_t *src, size_t len)
     Запись на устройство SPI, блокировка. Запись байтов длиной len из источника в SPI и отбрасывание любых полученных данных.
         Блокировка до передачи всех данных. Тайм-аут отсутствует, так как аппаратное обеспечение SPI всегда передаёт данные с известной скоростью.
@@ -129,6 +155,8 @@ Parameters
     Длина src
 Returns
     Количество записанных/считанных байт
+
+
 
 
 int spi_write_read_blocking (spi_inst_t *spi, const uint8_t *src, uint8_t *dst,  size_t len)
