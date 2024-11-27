@@ -1,10 +1,10 @@
 /* Подключение требуемых директорий */
 #include <stdio.h>
-#include "pico/stdlib.h" /* pico/stdlib.h включает в себя  hardware_uart, hardware_gpio, pico_binary_info, pico_runtime, pico_ platform, pico_printf, 
-    pico_stdio, pico_standart_link, pico_util*/
 #include "hardware/spi.h"
 #include "hardware/uart.h"
 #include "hardware/base.h"
+#include "pico/stdlib.h" /* pico/stdlib.h включает в себя  hardware_uart, hardware_gpio, pico_binary_info, pico_runtime, pico_ platform, pico_printf, 
+    pico_stdio, pico_standart_link, pico_util*/
 
 
 
@@ -28,7 +28,7 @@
 
 
 /* Определение скорости передачи */
-#define SPEED 2000000 /* 2000000Гц -> 2 МГц */
+#define SPEED 2000000 /* 2 000 000 Гц -> 2 МГц */
 
 
 
@@ -48,6 +48,8 @@
 long ADCread; /* Объявление переменных для хранения данных с 24 разрядного АЦП в 32 разрядной переменной */
 float pga_divider = 1,0; /* Значение коэффициента усиления */
 io_rw_32 *some_reg;
+long result = 0;
+
 
 
 
@@ -60,6 +62,7 @@ void SETTING_PIN_SPI(){
     /* Инициализирует экземпляры SPI */
     gpio_set_function(MISO, GPIO_FUNC_SPI);
         gpio_set_dir(MISO, GPIO_IN);
+        gpio_put(MISO, LOW);
     gpio_set_function(SCn1, GPIO_FUNC_SIO);
         gpio_set_dir(SCn1, GPIO_OUT);
         gpio_put(SCn1, HIGH);
@@ -90,46 +93,19 @@ void SETTING_PIN_UART(){
 
 
 
-/* Одиночный испульс синхронизации*/
-void SCK_PULSE(){
-    gpio_put(SCK, HIGH);
-    DELAY_410NS;
-    gpio_put(SCK, LOW);
-    DELAY_410NS;
-}
-
-
-
-
 /* Защитная последовательность из 3 импульсов */
-void Z_POLSE(){
-    SCK_PULSE();
-    SCK_PULSE();
-    SCK_PULSE();
-}
-
-
-
-
-/* Чтение данных с АЦП */
-/*
-SPI_READ_DATA(SCn){
-    gpio_put(SCn, LOW);
-
-    long result = 0; 
-
-    for(){ 
+void PROTECTIVE_IMPULSE(){
+    for(int i; i < 3; i++){
         gpio_put(SCK, HIGH);
         DELAY_410NS;
-
-        result |= digitalRead(DOUT_DRDY) << (23 - i);
-
         gpio_put(SCK, LOW);
         DELAY_410NS;
     }
-    gpio_put(SCn, HIGH);
 }
-*/
+
+
+
+
 /*
 Считывание данных с датчика по SPI предполагает следующую последовательность действий:
 
@@ -160,7 +136,17 @@ SPI_Read (unsigned char *data, unsigned char lenght). Считывает дан�
 
 /* Чтение данных с АЦП - вторая версия */
 long SPI_READ_DATA(SC){
-     
+    gpio_put(SC, LOW); /* Установка низкого логического уровня на линии SS */
+
+    for (int i = 0; i < 24; i++){//Read the 24-bits        
+        gpio_put(SCK, HIGH);
+        DELAY_410NS;
+
+        result |= digitalRead(SC) << (23 - i); //Read a bit and shift
+
+        gpio_put(SCK, HIGH);
+        DELAY_410NS;
+    }
 }
 
 

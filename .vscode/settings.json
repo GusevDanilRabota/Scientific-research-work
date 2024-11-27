@@ -2,5 +2,6 @@
     "files.associations": {
         "compare": "cpp",
         "cstdint": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/home/danil/VS Cod/Scientific-research-work/SPI0"
 }
