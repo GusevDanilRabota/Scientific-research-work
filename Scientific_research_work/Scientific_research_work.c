@@ -53,9 +53,9 @@
 int32_t ADCread = 0; /*Объявление переменных для хранения данных с 24 разрядного АЦП в 32 разрядной переменной */
 int32_t result = 0;
 
-byte registerValue = 0b00111100;
-
 float pga_divider = 128.0;
+
+/* byte registerValue = 0b00111100; */
 
 
 
@@ -112,14 +112,20 @@ int32_t SPI_READ_DATA(SC){
 
     gpio_put(SC, LOW); /* Установка низкого уровня для считывания */
 
-    for (int i = 0; i < 24; i++){       
-        gpio_put(SCK, HIGH);
-        DELAY_410NS;
+    if (spi_is_readable (spi_default)) {
+        printf ("Reading data from SPI...\n");
 
-        result |= spi_read_blocking(PORT_SPI, , , ) << (23 - i); //Read a bit and shift
+        for (int i = 0; i < 24; i++){       
+            gpio_put(SCK, HIGH);
+            DELAY_410NS;
 
-        gpio_put(SCK, LOW);
-        DELAY_410NS;
+            result |= spi_read_blocking (PORT_SPI, 0, in_buf, 1); << (23 - i); //Read a bit and shift
+
+            gpio_put(SCK, LOW);
+            DELAY_410NS;
+        }
+
+        printf ("Data received: %d\n", in_buf [0]);
     }
 
     gpio_put(SC, HIGH);
