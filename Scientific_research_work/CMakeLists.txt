@@ -15,9 +15,9 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.0.0)
-set(toolchainVersion 13_2_Rel1)
-set(picotoolVersion 2.0.0)
+set(sdkVersion 2.1.0)
+set(toolchainVersion 13_3_Rel1)
+set(picotoolVersion 2.1.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -28,35 +28,37 @@ set(PICO_BOARD pico CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(SPI0 C CXX ASM)
+project(Scientific_research_work C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(SPI0 SPI0.c )
+add_executable(Scientific_research_work Scientific_research_work.c )
 
-pico_set_program_name(SPI0 "SPI0")
-pico_set_program_version(SPI0 "0.1")
+pico_set_program_name(Scientific_research_work "Scientific_research_work")
+pico_set_program_version(Scientific_research_work "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(SPI0 0)
-pico_enable_stdio_usb(SPI0 0)
+pico_enable_stdio_uart(Scientific_research_work 1)
+pico_enable_stdio_usb(Scientific_research_work 0)
 
 # Add the standard library to the build
-target_link_libraries(SPI0
+target_link_libraries(Scientific_research_work
         pico_stdlib)
 
 # Add the standard include files to the build
-target_include_directories(SPI0 PRIVATE
+target_include_directories(Scientific_research_work PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
 )
 
 # Add any user requested libraries
-target_link_libraries(SPI0 
+target_link_libraries(Scientific_research_work 
         hardware_spi
+        hardware_timer
+        hardware_clocks
         )
 
-pico_add_extra_outputs(SPI0)
+pico_add_extra_outputs(Scientific_research_work)
 

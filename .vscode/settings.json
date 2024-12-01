@@ -1,7 +1,8 @@
 {
     "files.associations": {
-        "compare": "cpp",
-        "cstdint": "cpp"
+        "compare": "c",
+        "cstdint": "c",
+        "cstddef": "c"
     },
-    "cmake.sourceDirectory": "/home/danil/VS Cod/Scientific-research-work/SPI0"
+    "cmake.sourceDirectory": "/home/danil/VS Cod/Scientific-research-work/Scientific_research_work"
 }
