@@ -2,7 +2,8 @@
     "files.associations": {
         "compare": "c",
         "cstdint": "c",
-        "cstddef": "c"
+        "cstddef": "c",
+        "typeinfo": "cpp"
     },
-    "cmake.sourceDirectory": "/home/danil/Scientific-research-work/Scientific_research_work"
+    "cmake.sourceDirectory": "/home/danil/VS Code/Scientific-research-work/Scientific_research_work"
 }
