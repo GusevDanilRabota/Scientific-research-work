@@ -46,5 +46,5 @@
         "stdexcept": "cpp",
         "streambuf": "cpp"
     },
-    "cmake.sourceDirectory": "/home/danil/VS Code/Scientific-research-work/Scientific_research_work"
+    "cmake.sourceDirectory": "/home/danil/Документы/VS Code/Scientific-research-work/Scientific_research_work"
 }
